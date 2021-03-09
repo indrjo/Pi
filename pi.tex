@@ -1,0 +1,302 @@
+% !TEX program = lualatex
+% !TEX spellcheck = en_GB
+
+\input{structure.tex}
+\input{macros.tex}
+
+\begin{document}
+
+\begin{center}
+\begin{tabular}{c}
+{\Large The functors \(\pi_0\) and \(\pi_1\)} \\
+\\
+Last revision: \today{}.\\
+\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\tableofcontents
+
+\section{Set Theory prerequisites}
+
+\begin{lemma}\label{lemma:SetIso1}
+Let \(X\) and \(Y\) be two sets, \(\mathcal E\) be a partition of \(X\) and \(f : X \to Y\) be a function with the property: \(f(E)\) is a singleton for \(E \in \mathcal C\). Then there exists one and only one function \(f^\ast : \mathcal C \to Y\) such that commutes
+\[\begin{tikzcd}[column sep=tiny]
+X \ar["f", rr] \ar["p", swap, dr] & & Y \\
+& \mathcal C \ar["{f^\ast}", swap, ur]
+\end{tikzcd}\]
+where \(p : X \to \mathcal C\) is the function that maps each \(a \in X\) into the unique \(E \in \mathcal C\) such that \(a \in E\).% Furthermore, \(f^\ast\) is surjective if and only if so is \(f\).
+\end{lemma}
+
+\begin{proof}
+Consider the relation
+\[f^\ast := \set{(E, b) \in \mathcal C \times Y \mid \text{exists } a \in X \text{ such that } p(a) = E \text{ and } f(a) = b}\,.\] 
+Picked any \(E \in \mathcal C\), since it is not empty, we can have an \(a \in E\) and then we have the element \(f(a)\) of \(B\): thus \((E, f(a)) \in f^\ast\). Furthermore, consider the pairs \((E, b)\) and \((E, c)\) of \(f^\ast\): therefore \(b = f(u)\) and \(c = f(v)\) for some \(u, v \in E\); but, since \(f(E)\) in a singleton, we must conclude \(b = c\). We have shown that the relation \(f^\ast\) actually is a function \(\mathcal C \to Y\). Besides such function satisfies \(f^\ast p = f\). It remains only the uniqueness part. Assume you have a function \(g : \mathcal C \to Y\) such that \(gp = f\). Now, for every \(E \in \mathcal C\) we have at least an \(a \in E\), and \(g(E) = g(p(a)) = f^\ast (p(a)) = f^\ast(E)\).
+\end{proof}
+
+\begin{proposition}\label{prop:FunctionCompatibleWithEqRels}
+Let \(X\) and \(Y\) be two sets, \(\varepsilon_X\) and \(\varepsilon_Y\) equivalence relation on \(X\) and on \(Y\) respectively. Then for every function \(f : X \to Y\) that satisfies
+\begin{equation}
+\text{for every } a, b \in X \text{ if } a \varepsilon_X b \text{ then } f(a) \varepsilon_Y f(b) \label{eqn:EqRelCompat}
+\end{equation}
+there exist one and only one function \(f_\sharp : X/\varepsilon_X \to Y/\varepsilon_Y\) such that
+\[\begin{tikzcd}
+X \ar["{p_X}", swap, d] \ar["f", r] & Y \ar["p_Y", d] \\
+X/\varepsilon_X \ar["{f_\sharp}", swap, r] & Y/\varepsilon_X
+\end{tikzcd}\]
+commutes, where \(p_X\) and \(p_Y\) are the canonical projections.
+\end{proposition}
+
+\begin{proof}
+The function \(p_Yf : X \to Y/\varepsilon_Y\) is constant on \(\varepsilon_X\)-equivalence classes: in fact, for every \(a, b \in X\) we have
+\[\underbrace{a \varepsilon_X b \implies f(a) \varepsilon_Y f(b)}_{\text{cause~\eqref{eqn:EqRelCompat}}} \implies p_Y(f(a)) = p_Y(f(b)).\]
+Apply the previous lemma, and the proof is done.
+\end{proof}
+
+\section{Paths}
+
+We indicate with \(I\) the interval \([0, 1]\) equipped with the Euclidean topology inherited from \(\setR\).
+
+\begin{definition}[Paths, junction and inversion]
+Let \(X\) be a topological space and \(a, b \in X\). A {\em path} from \(a\) to \(b\) in \(X\) is a continuous function
+\[\gamma : I \to X \ \text{such that } \gamma(0)=a \text{ and } \gamma(1)=b\,.\]
+\(\Omega(X, a, b)\) denotes the set of the paths in \(X\) from \(a\) to \(b\). There is a function called {\em junction}:
+\[\ast : \Omega(X, a, b) \times \Omega(X, b, c) \to \Omega(X, a, c)\]
+where
+\[(\alpha \ast \beta)(t) := \begin{cases} \alpha(2t) & \text{if } 0 \le t \le \frac12 \\ \beta(2t-1) & \text{otherwise} \end{cases}\]
+and one named {\em inversion}:
+\[\inv : \Omega(X, a, b) \to \Omega(X, b, a)\]
+where
+\[\inv \varphi(t) := \varphi(1-t)\,.\]
+\end{definition}
+
+Note that the junction is not associative in a strict sense, that is not always \((\alpha \ast \beta) \ast \gamma = \alpha \ast (\beta \ast \gamma)\) holds. It is quite simple to demonstrate that
+\[\inv (\alpha \ast \beta) = \inv\beta \ast \inv\alpha\]
+for every \(\alpha \in \Omega(X, a, b)\) and \(\beta \in \Omega(X, b, c)\).
+
+\begin{lemma}
+Let \(X\) and \(Y\) be topological spaces, \(a, b \in X\). For every continuous function \(f :  X \to Y\), \(\alpha \in \Omega(X, a, b)\) and \(\beta \in \Omega(Y, b, c)\) we have
+\begin{align*}
+f(\alpha \ast \beta) &= f\alpha \ast f\beta \\
+f(\inv \alpha)       &= \inv (f \alpha)\,. 
+\end{align*}
+\end{lemma}
+
+\begin{proof}
+Since \(f\) is continuous, then
+\[f \alpha \in \Omega(Y, f(a), f(b)) \text{ and } f \beta \in \Omega(Y, f(b), f(c)).\]
+In that case:
+\[f((\alpha \ast \beta)(t)) := \begin{cases} f(\alpha(t)) & \text{if } 0 \le t \le \frac12 \\ f(\beta(t)) & \text{otherwise} \end{cases} = f(\alpha(t)) \ast f(\beta(t))\,.\]
+The proof of the other identity is quite similar.
+\end{proof}
+
+\begin{definition}[Connected points]
+Let \(X\) be a topological space and \(a\) and \(b\) two of its points. We write \(a \sim_X b\) whenever \(\Omega(X, a, b) \ne \nil\).
+\end{definition}
+
+\begin{proposition}
+For \(X\) topological space, \(\sim_X\) is an equivalence relation.
+\end{proposition}
+
+\begin{proof}
+For every \(a \in X\) there exists the {\em constant path}
+\[c_a : I \to X\,, \ c_a(t) := a \text{ for every } t \in I\,:\]
+Hence \(a \sim_X a\) for every \(a \in X\). Besides, for every \(a, b \in X\) and for every \(\lambda \in \Omega(X, a, b)\) there is the inverse path, that is \(\inv \lambda \in \Omega(X, b, a)\): so, if \(a \sim_X b\), then \(b \sim_X a\). Finally, for every \(a, b, c \in X\) and \(\alpha \in \Omega(X, a, b)\) and \(\beta \in \Omega(X, b, c)\) there is the jointed path \(\alpha \ast \beta \in \Omega(X, a, c)\): thus, if \(a \sim_X b\) and \(b \sim_X c\), then \(a \sim_X c\).
+\end{proof}
+
+The writing \([x]_{\sim_X}\) indicates the \(\sim_X\)-equivalence class of \(x \in X\).
+
+\section{The functor \(\pi_0 : \Top \to \Set\)}
+
+\begin{proposition}
+There exists a functor
+\[\pi_0 : \Top \to \Set\]
+described as follows:
+\begin{itemize}
+\item maps each topological space \(X\) into the set \(\pi_0(X) := X/\sim_X\);
+\item maps every continuous function \(f : X \to Y\) into the set function
+\[\pi_0(f) : X/\!\sim_X \to Y/\!\sim_Y\,, \ \pi_0([x]_{\sim_X}) := [f(x)]_{\sim_Y}\,.\]
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+Any topological space \(X\) has the set of \(\sim_X\)-equivalence classes of \(X/\!\sim_X\), so it is natural to take into account the function
+\[\obj\Top \to \obj\Set\,, \ X \to X/\!\sim_X\,.\]
+Take two topological spaces \(X\) and \(Y\) and a continuous function \(f : X \to Y\) and consider \(a, b \in X\) such that \(a \sim_X b\), that is there exists a path \(\lambda : I \to X\) from \(a\) to \(b\). Since \(f\) is a continuous function, so is \(f\lambda : I \to Y\): this is a path in \(Y\) from \(f(a)\) to \(f(b)\), so \(f(a) \sim_Y f(b)\) too. Thus, by Proposition~\ref{prop:FunctionCompatibleWithEqRels}, there exists a unique function \(f_\sharp : X/\sim_X \to Y/\sim_Y\) such that
+\[f_\sharp([a]_{\sim_X}) = [f(a)]_{\sim_Y} \text{ for every } a \in X\,.\]
+In other words, for \(X\) and \(Y\) topological spaces we have the function
+\[\Top(X, Y) \to \Set(X/\sim_X, Y/\sim_Y)\,, \ f \to f_\sharp\,.\]
+We prove the functoriality. Taken two continuous maps \(f : X \to Y\) and \(g : Y \to Z\), we have to demonstrate that \((gf)_\sharp = g_\sharp f_\sharp\): for every \(a \in X\)
+\begin{align*}
+(gf)_\sharp([a]_{\sim_X}) & = [gf(a)]_{\sim_Z} = \\
+                          & = g_\sharp([f(a)]_{\sim_Y}) = \\
+                          & = g_\sharp(f_\sharp([a]_{\sim_X})) = \\
+                          & = (g_\sharp f_\sharp)([a]_{\sim_X})\,.
+\end{align*}
+It remains to investigate what \((\id_X)_\sharp\) actually is, for \(X\) topological space and \(\id_X\) its identity: for each \(a \in X\) we have
+\[(\id_X)_\sharp([a]_{\sim_X}) = [\id_X(a)]_{\sim_X} = [a]_{\sim_X},\]
+that is \((\id_X)_\sharp = \id_{X/\sim_X}\). Finally, we have a functor \(\pi_0 : \Top \to \Set\) defined as follows:
+\[\pi_0(X) = X/\sim_X \text{ and } \pi_0(f) = f_\sharp\,.\qedhere\]
+\end{proof}
+
+
+\section{The functor \(\pi_1 : \Top_\ast \to \Grp\)}
+
+\begin{definition}[Homotopy]
+Let \(X\) be a topological space, \(a\) and \(b\) be two of its points and \(\alpha, \beta \in \Omega(X, a, b)\). A {\em homotopy} (plural: homotopies) from \(\alpha\) to \(\beta\) is a continuous function
+\[\Gamma : I \times I \to X\]
+such that:
+\begin{enumerate}
+\item \(\Gamma(-, 0) = \alpha\) and \(\Gamma(-, 1) = \beta\)
+\item \(\Gamma (0, t) = a\) and \(\Gamma(1, t) = b\) for every \(t \in I\).
+\end{enumerate}
+We say that \(\alpha\) is {\em homotopic} to \(\beta\), and write \(\alpha \simeq \beta\), whenever there is an homotopy from \(\alpha\) to \(\beta\); in that case, one may write
+\[\Gamma : \alpha \simeq \beta\]
+to specify that \(\Gamma\) is one of these homotopies.
+\end{definition}
+
+\begin{proposition}
+Paths in convex sets \(E \subseteq \setR^n\) are homotopic.
+\end{proposition}
+
+\begin{proof}
+Since \(E\) is convex, take \(a, b \in X\) and \(\alpha, \beta \in \Omega(X, a, b)\) and consider
+\[\Gamma : I \times I \to E\,, \ \Gamma(s, t) := (1-t)\alpha(s)+t\beta(s).\]
+This function is a homotopy from \(\alpha\) to \(\beta\).
+\end{proof}
+
+\begin{lemma}\label{lemma:Param}
+Let \(X\) be a topological space and \(a, b \in X\). For every \(\alpha \in \Omega(X, a, b)\) and \(\varphi \in \Omega(I, 0, 1)\) we have
+\[\alpha \simeq \alpha \varphi\,.\]
+\end{lemma}
+
+\begin{proof}
+There is, in fact, the homotopy
+\[\Lambda : I \times I \to X\,, \ \Lambda(s, t) := \alpha((1-t)s+t\varphi(s)).\qedhere\]
+%\begin{align*}
+%& \Lambda(s, 0) = \alpha(s) \text{ for every } s \in I \\
+%& \Lambda(s, 1) = \alpha(\varphi(s)) \text{ for every } s \in I \\
+%& \Lambda(0, t) = \alpha(0) = a \text{ for every } t \in I \\
+%& \Lambda(1, t) = \alpha(1) = b \text{ for every } t \in I\,.\qedhere
+%\end{align*}
+\end{proof}
+
+\begin{proposition}
+\(\simeq\) is an equivalence relation.
+\end{proposition}
+
+\begin{proof}
+Let \(X\) be a topological space and \(a, b \in X\).
+\begin{enumerate}
+\item \(\alpha \in \Omega(X, a, b)\) is homotopic to itself: one of these homotopies is
+\[\Gamma : I \times I \to X\,, \ \Gamma(s, t) := \alpha(s)\,.\]
+\item Take \(\alpha, \beta \in \Omega(X, a, b)\) and a homotopy \(\Lambda : \alpha \simeq \beta\). Then
+\[\Lambda' : I \times I \to X\,, \ \Lambda'(s, t) := \Lambda(s, 1-t)\]
+is a homotopy \(\beta \simeq \alpha\).
+\item Now take \(\alpha, \beta, \gamma \in \Omega(X, a, b)\) and homotopies \(\Delta_1 : \alpha \simeq \beta\), \(\Delta_2 : \beta \simeq \gamma\). The function
+\[\Delta_3 : I \times I \to X\,, \ \Delta_3(s, t) := \begin{cases} \Delta_1(s, 2t) & \text{if } 0 \le t \le \frac12 \\ \Delta_2(s, 2t-1) & \text{otherwise} \end{cases}\]
+is a homotopy.
+\end{enumerate}
+(Calculations are simple, and left to the reader.)
+\end{proof}
+
+\begin{proposition}\label{prop:Compat}
+\(\ast\) is compatible with \(\simeq\). That is: given a topological space \(X\), \(a, b, c \in X\), \(\alpha_1, \beta_1 \in \Omega(X, a, b)\) and \(\alpha_2, \beta_2 \in \Omega(X, a, b)\) we have
+\[\alpha_1 \simeq \beta_1 \text{ and } \alpha_2 \simeq \beta_2 \implies \alpha_1 \ast \alpha_2 \simeq \beta_1 \ast \beta_2\,.\]
+\end{proposition}
+
+\begin{proof}
+Consider homotopies \(\Gamma : \alpha_1 \simeq \beta_1\) and \(\Delta : \alpha_2 \simeq \beta_2\). A homotopy \(\alpha_1 \ast \alpha_2 \simeq \beta_1 \ast \beta_2\) is the following function
+\[\Xi : I \times I \to X\,, \ \Xi(s, t) := \begin{cases} \Gamma(2s, t) & \text{if } 0 \le s \le \frac12 \\ \Delta(2s-1, t) & \text{otherwise} \end{cases}\,.\qedhere\]
+\end{proof}
+
+The previous proposition is crucial for our purposes, because it permits a group structure upon a quotient set. Let's start with the magmatic base and then discover a bunch of properties which makes it a group.
+
+\begin{definition}
+Let \(X\) be a topological space and \(a \in X\).
+\[\pi_1(X, a) := \Omega(X, a, a)/\simeq\]
+whose elements are written as \([\alpha]\), where \(\alpha \in \Omega(X, a, a)\). Due to the Proposition~\ref{prop:Compat}, we can define the following operation:
+\[\begin{array}{ccc}
+\pi_1(X, a) \times \pi_1(X, a)  & \to & \pi_1(X, a) \\
+([f], [g])                      & \to &  [f][g] := [f \ast g]\,.
+\end{array}\]
+\end{definition}
+
+\begin{lemma}
+Consider a topological space \(X\) and an \(a \in X\). Then:
+\begin{enumerate}
+\item for every \(f, g, h \in \Omega(X, a, a)\)
+\[(f \ast g) \ast h \simeq f \ast (g \ast h)\]
+\item the path \(c_a : I \to X\) which maps every \(t \in I\) into \(a\) has the property: for every \(f \in \Omega(X, a, a)\)
+\[c_a \ast f \simeq f \simeq f \ast c_a\]
+\item for every \(f \in \Omega(X, a, a)\) we have
+\[f \ast \inv f \simeq \inv f \ast f \simeq c_a.\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}[Idea for the proof]
+Use Lemma~\ref{lemma:Param}. (Proof yet to \TeX{}-ify\dots{})
+\end{proof}
+
+\begin{proposition}
+Let \(X\) be a topological space and \(a \in X\). The set \(\pi_1(X, a)\) shipped with the multiplication defined above is a group. In particular, \([c_a]\) with \(a \in X\) is the identity and \({[\alpha]}^{-1} = [\inv\alpha]\).
+\end{proposition}
+
+\begin{proof}
+Direct consequence of the previous lemma.
+\end{proof}
+
+The group \(\pi_1(X, a)\) has some names: {\em fundamental group}, {\em first homotopy group}, or {\em Poincaré group}.
+
+\begin{proposition}
+For \(X\) topological space and \(a, b \in X\), if \(\Omega(X, a, b) \ne \nil\) then \(\pi_1(X, a) \cong \pi_1(X, b)\).
+\end{proposition}
+
+\begin{proof}
+So there exists \(\alpha \in \Omega(X, a, b)\). Then consider the function
+\[\lambda_\alpha : \pi_1(X, a) \to \pi_1(X, b)\,, \ \lambda_\alpha([f]) := {[\alpha]}^{-1}[f][\alpha]\,.\]
+At a first glance, the function \(\lambda_\alpha\) is a bijective since
+\[\lambda_{\inv \alpha} \lambda_\alpha = \id_{\pi_1(X, a)} \text{ and } \lambda_\alpha \lambda_{\inv \alpha} = \id_{\pi_1(X, b)}\,.\]
+It just remains to show \(\lambda_\alpha\) is a homomorphism:
+\begin{align*}
+\lambda_\alpha([f][g]) &= {[\alpha]}^{-1}[f][g][\alpha] = \\
+&= {[\alpha]}^{-1}[f][\alpha]{[\alpha]}^{-1}[g][\alpha] = \\
+&= \lambda_\alpha([f])\lambda_\alpha([g]) \,.
+\end{align*}
+for \(f, g \in \Omega(X, a, a)\).
+\end{proof}
+
+The previous fact has important consequences concerning path-connected spaces: for any pair of its points \(a\) and \(b\) we have \(\pi_1(X, a) \cong \pi_1(X, b)\). To put it in other words: no matter which point you choose, the corresponding fundamental groups are the same. In some sense, that said, we can use expressions as \q{{\em the} fundamental group of \(X\)} and write \(\pi_1(X)\) to mean any of the groups \(\pi_1(X, a)\), with \(a \in X\).
+
+%This motivates us to speak about \q{the} homotopy group of a path connected topological space without specifying any base point.
+
+\begin{definition}[Simply connected space]
+A path-connected topological space \(X\) is said to be {\em simply connected} whenever its fundamental group is banal.
+\end{definition}
+
+Maybe, it is better to recall what the category \(\Top_\ast\) is:
+\begin{itemize}
+\item its objects are the {\em pointed topological spaces}, viz topological spaces from which one point is highlighted; formally, a pointed topological space is a pair \((X, a)\), where \(X\) is a topological space and \(a\) is any of its points;
+\item a morphism \(f : (X, a) \to (Y, b)\) is precisely a continuous function \(f : X \to Y\) such that \(f(a) = b\);
+\item the composition occurs in the same way as it does in \(\Top\).
+\end{itemize}
+
+\begin{proposition}[The functor \(\pi_1 : \Top_\ast \to \Grp\)]
+There exists a functor
+\[\pi_1 : \Top_\ast \to \Grp\]
+so described:
+\begin{itemize}
+\item it maps a pointed topological space \((X, x_0)\) into the group \(\pi_1(X, x_0)\);
+\item for \((X, a)\) and \((Y, b)\) pointed topological spaces, it maps a continuous function \(f : (X, a) \to (Y, b)\) into the homomorphism
+\[f_\ast : \pi_1(X, a) \to \pi_1(X, b)\,, \ f_\ast([\alpha]) := [f\alpha] \,.\]
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+Consider a continuous function \(f : (X, a) \to (Y, b)\) of pointed topological spaces: such a function induces the function
+\[f' : \Omega(X, a, a) \to \Omega(Y, b, b)\,, \ f'(\alpha) := f\alpha\,.\]
+Now, let \(\alpha, \beta \in \Omega(X, a, a)\) with the homotopy \(\Lambda : \alpha \simeq \beta\): the function \(f\Lambda : I \times I \to Y\) is a homotopy from \(f\alpha\) to \(f\beta\) too. By Proposition~\ref{prop:FunctionCompatibleWithEqRels}, this implies that there exists one and only one function \(f_\ast : \pi_1(X, a) \to \pi_1(Y, b)\) that does what we need. Now, we have to prove it is a homomorphism and the functoriality of \((\cdot)_\ast\).
+\end{proof}
+
+\end{document}

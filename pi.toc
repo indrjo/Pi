@@ -1,0 +1,5 @@
+\selectlanguage *[variant=uk]{english}
+\contentsline {section}{\tocsection {}{1}{Set Theory prerequisites}}{1}{}%
+\contentsline {section}{\tocsection {}{2}{Paths}}{2}{}%
+\contentsline {section}{\tocsection {}{3}{The functor \(\pi _0 : \mathbf {Top}\to \mathbf {Set}\)}}{3}{}%
+\contentsline {section}{\tocsection {}{4}{The functor \(\pi _1 : \mathbf {Top}_\ast \to \mathbf {Grp}\)}}{4}{}%
